@@ -1,51 +1,19 @@
-# PuPrime Anomaly Detection Pipeline
-
-An automated anomaly detection system that monitors trading activity and flags 
-suspicious behaviour for risk and compliance teams at online forex brokers.
-
-## Project Overview
-
-This pipeline simulates the kind of real-time risk monitoring system used by 
-trading platforms like PuPrime to detect unusual trader behaviour before it 
-becomes a financial or compliance risk.
-
-## Anomaly Types Detected
-
-- **Unusual Volume** — trades with lot sizes exceeding normal thresholds
-- **Rapid Trading** — traders executing too many trades in a short time window
-- **Loss Streak** — traders experiencing consecutive losing trades (risk indicator)
-
-## Features
-
-- Generates realistic trade event data with injected anomalies
-- Three independent anomaly detectors running in parallel
-- Alerts saved to PostgreSQL database with full audit trail
-- 78 alerts detected from 1000 trade events in testing
-- Unit tested with pytest
-
-## Tech Stack
-
-- **Language:** Python 3.12
-- **Database:** PostgreSQL (Neon cloud)
-- **Libraries:** pandas, numpy, psycopg2, faker, python-dotenv
-- **Testing:** pytest
-- **Version Control:** Git/GitHub
-
-## Project Structure
-## Setup
-
-1. Clone the repository
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-3. Add your `.env` file:
-4. Run the pipeline:
+Run:
 ```bash
 python src/pipeline/alerts_pipeline.py
 ```
 
-## Sample Output
+## Known gaps / next steps
+
+- Detectors run on simulated data — in production, events would come from a real-time trade stream (Kafka or a database change feed)
+- `detect_rapid_trading()` uses an O(n²) per-trader window scan — acceptable for this scale, would need optimization for millions of events
+- No alerting/notification layer yet — alerts exist in the database but nothing pings the compliance team automatically
+- Thresholds (lot size > 10, window = 10 minutes, streak = 5) are hardcoded — a production system would make these configurable per instrument
+
+## Business value
+
+This pipeline is the foundation of a risk monitoring system. For a broker like PuPrime, catching an overleveraged position early prevents both client losses and potential regulatory liability. The queryable alerts table means compliance teams can filter, audit, and report on flagged activity without touching raw trade data.
+
 ## Author
 
 Matthew James — Data Engineer
